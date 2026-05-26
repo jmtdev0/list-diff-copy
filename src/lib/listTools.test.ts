@@ -70,6 +70,24 @@ describe('compareLists', () => {
     expect(result.allItems.map((item) => item.value)).toEqual(['2', '3', '10', 'x'])
   })
 
+  it('identifies lists with the same normalized items in the same order', () => {
+    const result = compareLists('apple\nbanana', 'apple\nbanana', 'line', options)
+
+    expect(result.relationship).toBe('exact')
+  })
+
+  it('identifies lists with the same normalized items in a different order', () => {
+    const result = compareLists('apple\nbanana\napple', 'banana\napple\napple', 'line', options)
+
+    expect(result.relationship).toBe('same-items-different-order')
+  })
+
+  it('identifies lists that only match after ignoring duplicates', () => {
+    const result = compareLists('apple\nbanana\nbanana', 'banana\napple', 'line', options)
+
+    expect(result.relationship).toBe('same-unique-items')
+  })
+
   it('renders optional line numbers', () => {
     const result = compareLists('alpha\nbeta', 'beta', 'line', options)
 

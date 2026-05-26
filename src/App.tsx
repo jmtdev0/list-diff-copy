@@ -6,7 +6,6 @@ import {
   FileUp,
   ListChecks,
   RotateCcw,
-  ShieldCheck,
   Sigma,
   Trash2,
   type LucideIcon,
@@ -71,6 +70,13 @@ const caseTransforms: Array<{ value: CaseTransform; label: string }> = [
   { value: 'capitalize', label: 'Capitalize' },
 ]
 
+const relationshipMessages = {
+  exact: 'Las listas A y B son exactamente iguales: mismos elementos en el mismo orden.',
+  'same-items-different-order': 'Las listas A y B contienen los mismos elementos, pero en distinto orden.',
+  'same-unique-items':
+    'Ignorando duplicados, las listas A y B tienen los mismos elementos.',
+} as const
+
 function App() {
   const preferences = loadPreferences()
   const [activeTab, setActiveTab] = useState<TabId>('compare')
@@ -115,10 +121,6 @@ function App() {
           <p className="eyebrow">Local-first text tools</p>
           <h1>List Diff Copy</h1>
         </div>
-        <div className="privacy-pill">
-          <ShieldCheck size={16} aria-hidden="true" />
-          Browser only
-        </div>
       </header>
 
       <nav className="tabs" aria-label="Tools">
@@ -150,6 +152,15 @@ function App() {
               <span>Clear</span>
             </button>
           </div>
+
+          <p className="copy-notice">
+            Esta página es una copia de{' '}
+            <a href="https://listdiff.com/" rel="noreferrer" target="_blank">
+              https://listdiff.com/
+            </a>
+            . La he copiado porque, si voy a introducir datos sensibles, prefiero hacerlo en una
+            página que haya creado yo.
+          </p>
 
           <div className="input-grid">
             <TextInputPanel
@@ -245,6 +256,10 @@ function App() {
             <Stat label="B unique" value={comparison.counts.bUnique} />
             <Stat label="All unique" value={comparison.counts.allUnique} />
           </div>
+
+          {comparison.relationship && (
+            <p className="relationship-notice">{relationshipMessages[comparison.relationship]}</p>
+          )}
 
           <div className="results-layout">
             <div className="result-tabs" aria-label="Result sections">

@@ -23,6 +23,7 @@ export interface CompareResult {
   inBoth: ListResultItem[]
   bOnly: ListResultItem[]
   allItems: ListResultItem[]
+  relationship: 'exact' | 'same-items-different-order' | 'same-unique-items' | null
   counts: {
     a: number
     b: number
@@ -81,6 +82,8 @@ export function compareLists(
   splitMode: SplitMode,
   options: CompareOptions,
 ): CompareResult {
+  const aNormalizedItems = buildNormalizedItems(aText, splitMode, options)
+  const bNormalizedItems = buildNormalizedItems(bText, splitMode, options)
   const aItems = buildUniqueItems(aText, splitMode, options)
   const bItems = buildUniqueItems(bText, splitMode, options)
   const aKeys = new Set(aItems.map((item) => item.key))
@@ -96,9 +99,10 @@ export function compareLists(
     inBoth: sortItems(inBoth, options.sortMode),
     bOnly: sortItems(bOnly, options.sortMode),
     allItems: sortItems(allItems, options.sortMode),
+    relationship: getListRelationship(aNormalizedItems, bNormalizedItems),
     counts: {
-      a: splitItems(aText, splitMode).filter((item) => normalizeItem(item, options).length > 0).length,
-      b: splitItems(bText, splitMode).filter((item) => normalizeItem(item, options).length > 0).length,
+      a: aNormalizedItems.length,
+      b: bNormalizedItems.length,
       aUnique: aItems.length,
       bUnique: bItems.length,
       allUnique: allItems.length,
@@ -134,6 +138,69 @@ function buildUniqueItems(
   })
 
   return [...unique.values()]
+}
+
+function buildNormalizedItems(text: string, splitMode: SplitMode, options: CompareOptions): string[] {
+  return splitItems(text, splitMode)
+    .map((item) => normalizeItem(item, options))
+    .filter((item) => item.length > 0)
+}
+
+function getListRelationship(
+  aItems: string[],
+  bItems: string[],
+): CompareResult['relationship'] {
+  if (aItems.length === 0 && bItems.length === 0) {
+    return null
+  }
+
+  if (arraysEqual(aItems, bItems)) {
+    return 'exact'
+  }
+
+  if (haveSameItemCounts(aItems, bItems)) {
+    return 'same-items-different-order'
+  }
+
+  if (setsEqual(new Set(aItems), new Set(bItems))) {
+    return 'same-unique-items'
+  }
+
+  return null
+}
+
+function arraysEqual(left: string[], right: string[]): boolean {
+  return left.length === right.length && left.every((item, index) => item === right[index])
+}
+
+function haveSameItemCounts(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) {
+    return false
+  }
+
+  const counts = new Map<string, number>()
+  left.forEach((item) => {
+    counts.set(item, (counts.get(item) ?? 0) + 1)
+  })
+
+  for (const item of right) {
+    const count = counts.get(item)
+    if (!count) {
+      return false
+    }
+
+    if (count === 1) {
+      counts.delete(item)
+    } else {
+      counts.set(item, count - 1)
+    }
+  }
+
+  return counts.size === 0
+}
+
+function setsEqual<T>(left: Set<T>, right: Set<T>): boolean {
+  return left.size === right.size && [...left].every((item) => right.has(item))
 }
 
 function normalizeCore(value: string, options: CompareOptions, forKey: boolean): string {

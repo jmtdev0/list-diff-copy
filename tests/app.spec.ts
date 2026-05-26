@@ -21,6 +21,9 @@ test('compares lists, copies, downloads, and keeps processing local', async ({ p
     runtimeRequests.push(request.url())
   })
 
+  await expect(page.getByText('Esta página es una copia de')).toBeVisible()
+  await expect(page.getByText('Browser only')).toHaveCount(0)
+
   await page.locator('#list-a').fill('apple\nbanana\nbanana\n')
   await page.locator('#list-b').fill('banana\ncarrot')
 
