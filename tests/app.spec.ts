@@ -21,8 +21,25 @@ test('compares lists, copies, downloads, and keeps processing local', async ({ p
     runtimeRequests.push(request.url())
   })
 
-  await expect(page.getByText('Esta página es una copia de')).toBeVisible()
+  await expect(page.getByText('This utility is based on')).toBeVisible()
   await expect(page.getByText('Browser only')).toHaveCount(0)
+
+  await page.locator('#list-a').fill('apple\nbanana')
+  await page.locator('#list-b').fill('apple\nbanana')
+  const relationshipNotice = page.locator('.relationship-notice')
+  await expect(relationshipNotice).toHaveText(
+    'Lists A and B are exactly the same: identical items in the same order.',
+  )
+  await expect
+    .poll(() =>
+      relationshipNotice.evaluate((notice) => {
+        const inputGrid = document.querySelector('.input-grid')
+        return inputGrid
+          ? Boolean(notice.compareDocumentPosition(inputGrid) & Node.DOCUMENT_POSITION_FOLLOWING)
+          : false
+      }),
+    )
+    .toBe(true)
 
   await page.locator('#list-a').fill('apple\nbanana\nbanana\n')
   await page.locator('#list-b').fill('banana\ncarrot')

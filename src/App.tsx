@@ -71,10 +71,9 @@ const caseTransforms: Array<{ value: CaseTransform; label: string }> = [
 ]
 
 const relationshipMessages = {
-  exact: 'Las listas A y B son exactamente iguales: mismos elementos en el mismo orden.',
-  'same-items-different-order': 'Las listas A y B contienen los mismos elementos, pero en distinto orden.',
-  'same-unique-items':
-    'Ignorando duplicados, las listas A y B tienen los mismos elementos.',
+  exact: 'Lists A and B are exactly the same: identical items in the same order.',
+  'same-items-different-order': 'Lists A and B contain the same items in a different order.',
+  'same-unique-items': 'Ignoring duplicates, lists A and B contain the same items.',
 } as const
 
 function App() {
@@ -154,13 +153,17 @@ function App() {
           </div>
 
           <p className="copy-notice">
-            Esta página es una copia de{' '}
+            This utility is based on{' '}
             <a href="https://listdiff.com/" rel="noreferrer" target="_blank">
               https://listdiff.com/
             </a>
-            . La he copiado porque, si voy a introducir datos sensibles, prefiero hacerlo en una
-            página que haya creado yo.
+            . It is maintained as a local-first alternative for reviewing sensitive list data with
+            greater control over the execution environment.
           </p>
+
+          {comparison.relationship && (
+            <p className="relationship-notice">{relationshipMessages[comparison.relationship]}</p>
+          )}
 
           <div className="input-grid">
             <TextInputPanel
@@ -256,10 +259,6 @@ function App() {
             <Stat label="B unique" value={comparison.counts.bUnique} />
             <Stat label="All unique" value={comparison.counts.allUnique} />
           </div>
-
-          {comparison.relationship && (
-            <p className="relationship-notice">{relationshipMessages[comparison.relationship]}</p>
-          )}
 
           <div className="results-layout">
             <div className="result-tabs" aria-label="Result sections">
