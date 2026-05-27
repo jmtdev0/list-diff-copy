@@ -153,12 +153,12 @@ function App() {
           </div>
 
           <p className="copy-notice">
-            This utility is based on{' '}
+            This page is a copy of{' '}
             <a href="https://listdiff.com/" rel="noreferrer" target="_blank">
               https://listdiff.com/
             </a>
-            . It is maintained as a local-first alternative for reviewing sensitive list data with
-            greater control over the execution environment.
+            . It’s a very useful website that I use quite often, but when it comes to working with
+            sensitive data, I prefer using a page that I created and control myself.
           </p>
 
           {comparison.relationship && (
@@ -361,6 +361,12 @@ function App() {
           </div>
         </section>
       )}
+
+      <footer className="site-footer">
+        <a href="https://github.com/jmtdev0/list-diff-copy" rel="noreferrer" target="_blank">
+          by @jmtdev0
+        </a>
+      </footer>
     </main>
   )
 }

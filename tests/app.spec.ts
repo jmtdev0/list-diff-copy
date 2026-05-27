@@ -21,7 +21,13 @@ test('compares lists, copies, downloads, and keeps processing local', async ({ p
     runtimeRequests.push(request.url())
   })
 
-  await expect(page.getByText('This utility is based on')).toBeVisible()
+  await expect(page.locator('.copy-notice')).toHaveText(
+    'This page is a copy of https://listdiff.com/. It’s a very useful website that I use quite often, but when it comes to working with sensitive data, I prefer using a page that I created and control myself.',
+  )
+  await expect(page.getByRole('link', { name: 'by @jmtdev0' })).toHaveAttribute(
+    'href',
+    'https://github.com/jmtdev0/list-diff-copy',
+  )
   await expect(page.getByText('Browser only')).toHaveCount(0)
 
   await page.locator('#list-a').fill('apple\nbanana')
