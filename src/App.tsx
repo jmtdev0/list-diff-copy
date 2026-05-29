@@ -116,9 +116,17 @@ function App() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <div>
+        <div className="title-block">
           <p className="eyebrow">Local-first text tools</p>
           <h1>List Diff Copy</h1>
+          <p className="copy-notice">
+            This page is a copy of{' '}
+            <a href="https://listdiff.com/" rel="noreferrer" target="_blank">
+              https://listdiff.com/
+            </a>
+            . It’s a very useful website that I use quite often, but when it comes to working with
+            sensitive data, I prefer using a page that I created and control myself.
+          </p>
         </div>
       </header>
 
@@ -151,15 +159,6 @@ function App() {
               <span>Clear</span>
             </button>
           </div>
-
-          <p className="copy-notice">
-            This page is a copy of{' '}
-            <a href="https://listdiff.com/" rel="noreferrer" target="_blank">
-              https://listdiff.com/
-            </a>
-            . It’s a very useful website that I use quite often, but when it comes to working with
-            sensitive data, I prefer using a page that I created and control myself.
-          </p>
 
           {comparison.relationship && (
             <p className="relationship-notice">{relationshipMessages[comparison.relationship]}</p>
