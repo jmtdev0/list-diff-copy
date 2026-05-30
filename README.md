@@ -3,6 +3,8 @@
 Local-first tools for comparing lists and inspecting text without sending the
 user's content anywhere after the app loads.
 
+Live app: https://list-diff-copy.netlify.app/
+
 ## Features
 
 - Compare two lists with unique set semantics.
