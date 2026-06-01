@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "lmstudio:qwen": "powershell -ExecutionPolicy Bypass -File ./tools/start-lmstudio-qwen.ps1",
     "preview": "vite preview"
   },
   "dependencies": {
